@@ -14,9 +14,6 @@ BUSY_START = "2025-06-02T09:00:00"
 BUSY_END = "2025-06-02T17:00:00"
 
 
-# ── /forecast (pattern-based ML) ────────────────────────────────────────────
-
-
 def test_forecast_health():
     response = client.get("/health")
     assert response.status_code == 200
@@ -106,9 +103,6 @@ def test_forecast_granularity_too_small_rejected():
         json={"start": BUSY_START, "end": BUSY_END, "granularity_minutes": 5},
     )
     assert response.status_code == 422
-
-
-# ── /forecast/from-events (exact interval counting) ─────────────────────────
 
 
 EVENTS_PAYLOAD = {

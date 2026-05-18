@@ -17,8 +17,6 @@ from api.main import app
 
 client = TestClient(app)
 
-# ── Terminal helpers ──────────────────────────────────────────────────────────
-
 W = 68
 
 def hr(ch="═"):   print(ch * W)
@@ -43,9 +41,6 @@ def bar(value: float, max_val: float, width: int = 18) -> str:
     return "█" * filled + "░" * (width - filled)
 
 
-# ── Fixture data ──────────────────────────────────────────────────────────────
-
-# (title, attendee_count, duration_minutes)
 MEETINGS = [
     ("Eng Daily Standup",               8,  15),
     ("Acme x Stripe — Q2 QBR",         12,  60),
@@ -55,13 +50,12 @@ MEETINGS = [
     ("Company All-Hands: H2 Kickoff",   85,  60),
 ]
 
-MONDAY = "2025-06-02"  # a Monday
+MONDAY = "2025-06-02"
 
 
 def make_planning_segments(duration: float = 3600.0) -> list[dict]:
     """Generate a realistic 60-min planning meeting speaker timeline (seed=42)."""
     rng = np.random.default_rng(42)
-    # (name, target_talk_seconds, n_turns)
     speakers = [
         ("Sarah (PM)",  duration * 0.36, 10),
         ("Dev Lead",    duration * 0.28,  8),
@@ -88,8 +82,6 @@ def make_planning_segments(duration: float = 3600.0) -> list[dict]:
     return segs
 
 
-# ── Demo ──────────────────────────────────────────────────────────────────────
-
 def demo():
     banner([
         "",
@@ -106,7 +98,6 @@ def demo():
     print("  meetings, forecasting bot demand, injecting optimal bot configs,")
     print("  and surfacing post-meeting speaker analytics.")
 
-    # ── Build 1: Title Classifier ─────────────────────────────────────────────
     section(1, "Meeting Title Classifier")
     blank()
     print("    Classifying today's 6 meetings in a single batch request:\n")
@@ -127,7 +118,6 @@ def demo():
     blank()
     print("    ✓ All 6 meetings classified correctly in one call.")
 
-    # ── Build 2: Demand Forecaster ────────────────────────────────────────────
     section(2, "Bot Demand Forecaster")
     blank()
     print(f"    Hourly bot demand forecast for {MONDAY} (Mon), 09:00 – 17:00:\n")
@@ -172,7 +162,6 @@ def demo():
         flag = "  ← peak" if s["predicted_bots"] == peak2 else ""
         print(f"    {hour}   {b}  {int(s['predicted_bots'])} bots (exact){flag}")
 
-    # ── Build 3: Config Recommender ───────────────────────────────────────────
     section(3, "Agent Config Recommender")
     blank()
     print("    Auto-configuring a bot for each meeting type + context:\n")
@@ -201,7 +190,6 @@ def demo():
     print("    ✓ Recording mode, summary depth, diarization, and join time")
     print("      are all tuned per meeting type, size, and duration.")
 
-    # ── Build 4: Speaker Intelligence ─────────────────────────────────────────
     section(4, "Speaker Intelligence")
     blank()
     print('    Post-meeting analysis: "Product Roadmap Planning H2" (60 min)\n')
@@ -248,7 +236,6 @@ def demo():
     blank()
     print(f"    ✦ Insight: {insight}")
 
-    # ── Closing ───────────────────────────────────────────────────────────────
     blank()
     hr()
     print()

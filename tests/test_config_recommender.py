@@ -22,9 +22,6 @@ def _recommend(meeting_type: str, attendees: int, duration: int) -> dict:
     return response.json()
 
 
-# ── Schema and structure ─────────────────────────────────────────────────────
-
-
 def test_recommend_returns_200():
     response = client.post("/recommend", json={
         "meeting_type": "standup",
@@ -61,9 +58,6 @@ def test_recommend_echoes_request_fields():
     assert data["meeting_type"] == "interview"
     assert data["attendee_count"] == 3
     assert data["duration_minutes"] == 45
-
-
-# ── Golden assertions — deterministic fields (100% CV accuracy) ──────────────
 
 
 @pytest.mark.parametrize("mtype,att,dur,expected_mode", [
@@ -112,9 +106,6 @@ def test_bot_join_offset_golden(mtype, att, dur, expected_offset):
     assert cfg["bot_join_offset_seconds"] == expected_offset
 
 
-# ── Attendee-count driven logic ──────────────────────────────────────────────
-
-
 def test_large_meeting_gets_audio_video():
     """Any type with 10+ attendees should get audio_video recording."""
     # workshop base is audio_only but large crowds warrant video
@@ -132,9 +123,6 @@ def test_group_meeting_gets_diarization():
     """Meetings with 3+ attendees should have diarization enabled."""
     cfg = _recommend("planning", 6, 60)["config"]
     assert cfg["speaker_diarization"] is True
-
-
-# ── Validation edge cases ────────────────────────────────────────────────────
 
 
 def test_invalid_meeting_type_rejected():
@@ -180,9 +168,6 @@ def test_duration_over_limit_rejected():
         "duration_minutes": 481,
     })
     assert response.status_code == 422
-
-
-# ── Batch endpoint ───────────────────────────────────────────────────────────
 
 
 BATCH_PAYLOAD = {

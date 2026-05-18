@@ -13,8 +13,6 @@ from datetime import date, timedelta
 SEED = 42
 random.seed(SEED)
 
-# ── shared vocabulary ──────────────────────────────────────────────────────────
-
 FIRST_NAMES = [
     "Alice", "Bob", "Carlos", "Diana", "Ethan", "Fatima", "George", "Hannah",
     "Ivan", "Julia", "Kevin", "Laura", "Marcus", "Nina", "Omar", "Priya",
@@ -75,8 +73,6 @@ def _maybe(val: str, prob: float = 0.4) -> str:
 def _join(*parts: str, sep: str = " ") -> str:
     return sep.join(p for p in parts if p).strip()
 
-
-# ── per-category template banks ────────────────────────────────────────────────
 
 def _standup_titles() -> list[str]:
     templates = [
@@ -247,8 +243,6 @@ def _social_titles() -> list[str]:
     return [random.choice(templates)() for _ in range(120)]
 
 
-# ── assemble dataset ───────────────────────────────────────────────────────────
-
 CATEGORY_GENERATORS: dict[str, callable] = {
     "standup":    _standup_titles,
     "planning":   _planning_titles,
@@ -269,7 +263,6 @@ def generate_dataset(oversample_factor: int = 3) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for label, gen_fn in CATEGORY_GENERATORS.items():
         seen: set[str] = set()
-        # generate oversample_factor × more titles, keep unique ones
         for _ in range(oversample_factor):
             for title in gen_fn():
                 t = title.strip()
@@ -296,7 +289,6 @@ if __name__ == "__main__":
     count = save_dataset(out)
     print(f"Generated {count} labeled titles → {out}")
 
-    # quick distribution check
     from collections import Counter
     rows = generate_dataset()
     dist = Counter(r["label"] for r in rows)

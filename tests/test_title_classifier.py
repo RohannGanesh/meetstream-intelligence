@@ -12,7 +12,6 @@ VALID_LABELS = {
     "all_hands", "interview", "workshop", "social",
 }
 
-# (title, expected_label)
 GOLDEN = [
     ("Eng Standup", "standup"),
     ("Daily Scrum - Backend", "standup"),

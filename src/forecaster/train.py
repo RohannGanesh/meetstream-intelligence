@@ -32,13 +32,13 @@ def _generate_events(n_days: int, rng: np.random.Generator) -> pd.DataFrame:
     rows = []
     for day_offset in range(n_days):
         dt = base + timedelta(days=day_offset)
-        dow = dt.weekday()  # 0=Mon, 6=Sun
+        dow = dt.weekday()
 
-        if dow >= 5:  # weekend: very few meetings
+        if dow >= 5:
             n_meetings = int(rng.poisson(2))
-        elif dow == 4:  # Friday: lighter
+        elif dow == 4:
             n_meetings = int(rng.poisson(28))
-        else:  # Mon-Thu: busy
+        else:
             n_meetings = int(rng.poisson(48))
 
         for _ in range(n_meetings):
@@ -74,7 +74,7 @@ def _extract_features(df: pd.DataFrame) -> pd.DataFrame:
     """Derive cyclically-encoded temporal features from slot_start."""
     ts = df["slot_start"]
     hour = ts.dt.hour
-    dow = ts.dt.dayofweek  # 0=Mon
+    dow = ts.dt.dayofweek
     features = pd.DataFrame(
         {
             "hour": hour,

@@ -20,8 +20,6 @@ def _analyze(meeting_id: str, duration: float, segments: list[dict]) -> dict:
     return response.json()
 
 
-# ── Helpers: realistic meeting fixtures ─────────────────────────────────────
-
 def _make_balanced_segments(duration: float = 3600.0) -> list[dict]:
     """Four speakers sharing time roughly equally in alternating 2-min turns."""
     speakers = ["Alice", "Bob", "Carol", "Dave"]
@@ -39,12 +37,10 @@ def _make_balanced_segments(duration: float = 3600.0) -> list[dict]:
 def _make_dominated_segments(duration: float = 3600.0) -> list[dict]:
     """One speaker talks 85%, three others share the remaining 15%."""
     segs = []
-    # dominator: 0.85 * 3600 = 3060s in many turns
     t = 0.0
     while t + 300 <= duration * 0.85:
         segs.append({"speaker": "Boss", "start": t, "end": t + 290.0})
         t += 300.0
-    # others share remaining ~540s
     others = ["A", "B", "C"]
     chunk = 60.0
     for i, sp in enumerate(others):
@@ -64,7 +60,6 @@ def _make_presenter_led_segments(duration: float = 3600.0) -> list[dict]:
     while t + chunk <= target_presenter:
         segs.append({"speaker": "Presenter", "start": t, "end": t + chunk - 10})
         t += chunk
-    # participants share remaining ~38%
     participants = ["P1", "P2", "P3"]
     p_start = target_presenter
     p_chunk = (duration - target_presenter) / len(participants)
@@ -73,8 +68,6 @@ def _make_presenter_led_segments(duration: float = 3600.0) -> list[dict]:
         p_start += p_chunk
     return segs
 
-
-# ── Response structure ───────────────────────────────────────────────────────
 
 def test_analyze_returns_200():
     segs = [{"speaker": "Alice", "start": 0.0, "end": 60.0}]
@@ -122,8 +115,6 @@ def test_engagement_is_valid_label():
     data = _analyze("m1", 3600.0, _make_balanced_segments())
     assert data["engagement"] in VALID_ENGAGEMENTS
 
-
-# ── Per-speaker analytics correctness ───────────────────────────────────────
 
 def test_talk_ratios_sum_to_at_most_one():
     data = _analyze("m1", 3600.0, _make_balanced_segments())
@@ -210,8 +201,6 @@ def test_no_interruption_with_long_gap():
     assert data["interruption_count"] == 0
 
 
-# ── Engagement classification (golden) ──────────────────────────────────────
-
 def test_balanced_engagement():
     data = _analyze("balanced", 3600.0, _make_balanced_segments())
     assert data["engagement"] == "balanced"
@@ -233,8 +222,6 @@ def test_single_speaker_is_dominated():
     data = _analyze("solo", 3600.0, segs)
     assert data["engagement"] == "dominated"
 
-
-# ── Validation edge cases ────────────────────────────────────────────────────
 
 def test_segment_end_before_start_rejected():
     response = client.post("/speaker/analyze", json={
@@ -280,8 +267,6 @@ def test_empty_speaker_name_rejected():
     })
     assert response.status_code == 422
 
-
-# ── Batch endpoint ───────────────────────────────────────────────────────────
 
 BATCH_PAYLOAD = {
     "meetings": [

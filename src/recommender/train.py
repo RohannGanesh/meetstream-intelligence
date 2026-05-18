@@ -75,12 +75,10 @@ def _generate_data(samples_per_type: int, rng: np.random.Generator) -> pd.DataFr
 
             cfg = dict(_BASE[mtype])
 
-            # attendee-count driven overrides
             cfg["speaker_diarization"] = 1 if att >= 3 else 0
             if att >= 10:
                 cfg["recording_mode"] = "audio_video"
 
-            # duration-driven overrides
             if dur >= 90 and cfg["summary_depth"] == "standard":
                 cfg["summary_depth"] = "detailed"
             if dur <= 20 and cfg["summary_depth"] == "standard":
